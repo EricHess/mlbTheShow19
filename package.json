@@ -1,0 +1,24 @@
+{
+  "name": "mlb",
+  "version": "1.0.0",
+  "description": "MLB The Show 19 API Test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EricHess/mlbTheShow19.git"
+  },
+  "author": "Eric Hess",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EricHess/mlbTheShow19/issues"
+  },
+  "homepage": "https://github.com/EricHess/mlbTheShow19#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "nodemon": "^1.18.10",
+    "request": "^2.88.0"
+  }
+}
