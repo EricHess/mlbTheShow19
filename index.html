@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MLB The Show 19 Community Markets</title>
+    <script src="helpers/helper.js"></script>
+</head>
+<body>
+    <aside class="loadingBar"></aside>
+    <section class="">
+
+        <button onclick="fetchPlayers()">Get Player List!</button>
+        
+        <form id="profitMarginForm" name="profitMarginForm">
+            Show me profits within:
+            <input type="text" name="min" />
+            <input type="text" name="max" />
+            <button type="submit">Submit</button>
+        </form>
+
+        <form id="outbidChecker" name="outbidChecker">
+            
+            <label for="buyOrder">Buy Order</label>
+            <input name="orderType" type="radio" value="buyOrder" id="buyOrder">
+            <label for="sellOrder">Sell Order</label>
+            <input name="orderType" type="radio" value="sellOrder" id="sellOrder">
+
+
+            I have a bid of <input type="text" name="bigAmount" /> in on <input type="text" name="playerName" />, have I been outbid?
+            <button type="submit">Check!</button>
+        </form>
+    </section>
+
+</body>
+</html>
