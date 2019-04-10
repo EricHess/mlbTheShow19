@@ -26,13 +26,21 @@ gatherProfitRange = (min,max) =>{
 outbidChecker = (type, amount, name) =>{
     let playerElement = playerList.find(obj => obj.name == name);
 
+    fetch('/requestPlayers/'+playerElement.original_page)
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(myJson) {
+    console.log(JSON.stringify(myJson));
+  });
+
     switch(type){
         case "buyOrder":
-        playerElement.buy_price > amount ? console.log('outbid') : console.log('all good still')
+        playerElement.buy_price > parseInt(amount) ? console.log('outbid') : console.log('all good still')
         break;
 
         case "sellOrder":
-        playerElement.sell_price < amount ? console.log('outbid') : console.log('all good still')   
+        playerElement.sell_price < parseInt(amount) ? console.log('outbid') : console.log('all good still')   
     }
 }
 
@@ -47,6 +55,8 @@ document.querySelector("#profitMarginForm").addEventListener("submit", function(
 
 document.querySelector("#outbidChecker").addEventListener("submit", function(e){
     e.preventDefault();
+    //Go and get fresh count?
+    //Need original index number, get that page, only grab that page for more instantaneous results
 
     let orderType = e.target[0].checked === true ? "buyOrder" : "sellOrder"
     let amount = e.target[2].value;
