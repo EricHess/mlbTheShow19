@@ -35,7 +35,7 @@ outbidChecker = (type, amount, name) =>{
 
         switch(type){
             case "buyOrder":
-            updatedCost.best_buy_price == parseInt(amount) ? console.log('all good still') : console.log('outbid')
+            updatedCost.best_buy_price == parseInt(amount) ? console.log('all good still') : console.log('outbid, new bid is: '+updatedCost.best_sell_price) 
             break;
     
             case "sellOrder":
