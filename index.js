@@ -1,6 +1,8 @@
 var express = require("express");
 var app = express();
 var path = require('path');
+var _ = require('lodash');
+var uniqueId = require('lodash.uniqueid');
 
 
 let stub = [
@@ -8796,6 +8798,13 @@ app.get("/", (req,res) =>{
     callToAPI(res, initialIterator, "MLB_Card", req);
  })
 
+ app.get("/outbidCheck/:originalPage", (req, res, next) => {
+     let params=req && req.params,
+     originalPage=params.originalPage
+
+    returnOutbidAlert(res, originalPage);
+ })
+
 
  app.get("/requestStadiums", (req, res, next) => {
     callToAPI(res, initialIterator, "Stadium");
@@ -8813,6 +8822,14 @@ app.get("/", (req,res) =>{
     callToAPI(res, initialIterator, "Unlockable");
  });
 
+
+returnOutbidAlert = (res, originalPage) =>{
+    request("https://mlb19.theshownation.com/apis/listings.json?type=MLB_Card&page="+originalPage, function (error, response, body) {
+        let resp = JSON.parse(response.body);
+        res.send(resp.listings);
+    })
+}
+
  function callToAPI(res, iterator, type, req){
     let pageIdToCall = req && req.params && req.params.pageId || false;
 
@@ -8823,8 +8840,10 @@ app.get("/", (req,res) =>{
 
             //append the original page for future ease of grabbing a specific set, performance
             for(let i=0;i<resp.listings.length;i++){
-                resp.listings[i].originalPage=resp.page
+                resp.listings[i].originalPage=resp.page;
+                resp.listings[i].uniqueId=_.uniqueId("uid");
             }
+
 
             //push the current set to the global array
             wholeCollection.push(resp.listings);
@@ -8834,28 +8853,39 @@ app.get("/", (req,res) =>{
                 initialIterator++;
                 callToAPI(res, initialIterator, type);
             }else{
+                //reset the iterator for future calls
+                initialIterator = 1;
                 //when it is all done, send it to the consume data method
                 res.send(consumeData(wholeCollection.flat()));
             }
         })      
     } else {
-        console.log(pageIdToCall)
         request("https://mlb19.theshownation.com/apis/listings.json?type="+type+"&page="+pageIdToCall, function (error, response, body) {
-            //get the response, parse it down to just the body
-            let resp = JSON.parse(response.body)
 
-            //append the original page for future ease of grabbing a specific set, performance
-            for(let i=0;i<resp.listings.length;i++){
-                resp.listings[i].originalPage=resp.page
-                resp.listings[i].newlyUpdated=true
-            }
+        //get the response, parse it down to just the body
+            let resp = JSON.parse(response.body)
+            let newArr = [];
 
             //push the current set to the global array
-            wholeCollection.push(resp.listings);
-            console.log(wholeCollection);
+            //merge the arrays and de-dupe here
+            newArr.push(resp.listings);
+
+            //iterate over newArr and grab the uniqueIDs
+            //find that uniqueID in wholeCollection, and replace that node. (splice(i,1,node))
+            for(let i=0;i<newArr.length;i++){
+                for(let j=0;j<wholeCollection.length;j++){
+                    if(newArr[i].uniqueId === wholeCollection[j].uniqueId){
+                        wholeCollection.splice(j,1,newArr[i]);
+                    }
+                }
+            }
+
+            // console.log(wholeCollection)
+
+            // wholeCollection.push(resp.listings);
+
             //when it is all done, send it to the consume data method
-            res.send(consumeData(wholeCollection.flat(), pageIdToCall));
-            // console.log(wholeCollection.flat())
+            // res.send(consumeData(wholeCollection.flat(), null));
             
         })
     }
@@ -8874,17 +8904,10 @@ function consumeData(collection, pageId){
             "profitMargin": ((collection[i].best_sell_price - collection[i].best_sell_price * .10) - collection[i].best_buy_price),
             "sell_price": collection[i].best_sell_price,
             "buy_price": collection[i].best_buy_price,
-            "original_page": collection[i].originalPage
+            "original_page": collection[i].originalPage,
+            "uid": collection[i].uniqueId
         })
     }
-
-    function compare(a,b) {
-        if (a.profitMargin > b.profitMargin)
-          return -1;
-        if (a.profitMargin < b.profitMargin)
-          return 1;
-        return 0;
-      }
       
       draftArr.sort(compare);
 
@@ -8892,3 +8915,27 @@ function consumeData(collection, pageId){
 }
 
    });
+
+
+
+   //helpers
+   function arrayUnique(array) {
+    var a = array.concat();
+    for(var i=0; i<a.length; ++i) {
+        for(var j=i+1; j<a.length; ++j) {
+            if(a[i].uniqueId === a[j].uniqueId)
+                a.splice(j--, 1);
+        }
+    }
+
+    return a;
+}
+
+
+function compare(a,b) {
+    if (a.profitMargin > b.profitMargin)
+      return -1;
+    if (a.profitMargin < b.profitMargin)
+      return 1;
+    return 0;
+  }

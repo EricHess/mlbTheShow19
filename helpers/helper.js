@@ -1,3 +1,5 @@
+
+
 let playerList;
 let profitList;
 
@@ -25,23 +27,22 @@ gatherProfitRange = (min,max) =>{
 
 outbidChecker = (type, amount, name) =>{
     let playerElement = playerList.find(obj => obj.name == name);
+    fetch('/outbidCheck/'+playerElement.original_page)
+    .then(response => response.json())
+    .then(data => {
+        let updatedCost = data.find(obj => obj.name == name);
 
-    fetch('/requestPlayers/'+playerElement.original_page)
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(myJson) {
-    console.log(JSON.stringify(myJson));
-  });
+        switch(type){
+            case "buyOrder":
+            updatedCost.best_buy_price >= parseInt(amount) ? console.log('outbid') : console.log('all good still')
+            break;
+    
+            case "sellOrder":
+            updatedCost.best_sell_price <= parseInt(amount) ? console.log('outbid') : console.log('all good still')   
+        }
+     });
 
-    switch(type){
-        case "buyOrder":
-        playerElement.buy_price > parseInt(amount) ? console.log('outbid') : console.log('all good still')
-        break;
-
-        case "sellOrder":
-        playerElement.sell_price < parseInt(amount) ? console.log('outbid') : console.log('all good still')   
-    }
+    
 }
 
 

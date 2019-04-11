@@ -18,6 +18,8 @@
   "homepage": "https://github.com/EricHess/mlbTheShow19#readme",
   "dependencies": {
     "express": "^4.16.4",
+    "lodash": "^4.17.11",
+    "lodash.uniqueid": "^4.0.1",
     "nodemon": "^1.18.10",
     "request": "^2.88.0"
   }
