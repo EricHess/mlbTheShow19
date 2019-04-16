@@ -7,7 +7,7 @@
  * 
  */
 
-let playerList = localStorage.getItem("players") != null ? JSON.parse(localStorage.getItem("players")) : null;
+let playerList;
 let profitList;
 let profitRange = [150, 900];
 
@@ -20,6 +20,8 @@ fetchPlayers = () =>{
     .then(response => response.json())
     .then(data => {
         playerList = data;
+        console.table(localStorage.getItem("players"))
+        localStorage.removeItem("players");
         localStorage.setItem("players", JSON.stringify(data));
         loadingBar.innerHTML="Players Loaded!"
         //Need to output on to the page in a container
@@ -31,13 +33,13 @@ gatherProfitRange = (min,max) =>{
     profitRange[0] = min;
     profitRange[1] = max;
     
-    let gatheredPlayers = []
+    let gatheredPlayers = [];
     for(let i=0;i < playerList.length; i++){
         if(playerList[i].profitMargin > min && playerList[i].profitMargin < max ){
             gatheredPlayers.push(playerList[i])
         }
     }
-    console.table(gatheredPlayers);
+    // console.table(gatheredPlayers);
     //need to output on to hte page in a container
     return gatheredPlayers;
 }
@@ -52,11 +54,12 @@ outbidChecker = (type, amount, name) =>{
     .then(data => {
         let updatedInfo = data.find(obj => obj.name == name);
 
+        //updateBidTable with name, price, amount
+        updateBidTable(updatedInfo, type);
+
         switch(type){
             case "buyOrder":
             updatedInfo.best_buy_price == parseInt(amount) ? console.log('all good still') : console.log('outbid, new bid is: '+updatedInfo.best_sell_price) 
-            //updateBidTable with name, price, amount
-            updateBidTable(updatedInfo, type);
             break;
     
             case "sellOrder":
