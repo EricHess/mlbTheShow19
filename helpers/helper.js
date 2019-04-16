@@ -15,6 +15,7 @@ fetchPlayers = () =>{
         playerList = data;
         localStorage.setItem("players", JSON.stringify(data));
         loadingBar.innerHTML="Players Loaded!"
+        //Need to output on to the page in a container
     })
 }
 
@@ -26,6 +27,7 @@ gatherProfitRange = (min,max) =>{
         }
     }
     console.table(gatheredPlayers);
+    //need to output on to hte page in a container
     return gatheredPlayers;
 }
 
