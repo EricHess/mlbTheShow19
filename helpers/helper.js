@@ -7,7 +7,7 @@
  * 
  */
 
-let playerList;
+let playerList = localStorage.getItem("players") != null ? JSON.parse(localStorage.getItem("players")) : null;
 let profitList;
 let profitRange = [150, 900];
 
@@ -38,7 +38,7 @@ gatherProfitRange = (min,max) =>{
             gatheredPlayers.push(playerList[i])
         }
     }
-    // console.table(gatheredPlayers);
+    console.table(gatheredPlayers);
     //need to output on to hte page in a container
     return gatheredPlayers;
 }
