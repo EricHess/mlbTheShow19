@@ -8832,17 +8832,20 @@ returnOutbidAlert = (res, originalPage) =>{
 
  function callToAPI(res, iterator, type, req){
     let pageIdToCall = req && req.params && req.params.pageId || false;
+    
 
     if(pageIdToCall === false){
         request("https://mlb19.theshownation.com/apis/listings.json?type="+type+"&page="+iterator, function (error, response, body) {
             //get the response, parse it down to just the body
             let resp = JSON.parse(response.body)
+            
 
             //append the original page for future ease of grabbing a specific set, performance
             for(let i=0;i<resp.listings.length;i++){
                 resp.listings[i].originalPage=resp.page;
                 resp.listings[i].uniqueId=_.uniqueId("uid");
             }
+
             
             //push the current set to the global array
             wholeCollection.push(resp.listings);
@@ -8909,6 +8912,7 @@ function consumeData(collection, pageId){
     }
       
       draftArr.sort(compare);
+      wholeCollection = [];
 
     return draftArr;
 }
