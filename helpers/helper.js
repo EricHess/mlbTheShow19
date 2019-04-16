@@ -9,6 +9,7 @@
 
 let playerList = localStorage.getItem("players") != null ? JSON.parse(localStorage.getItem("players")) : null;
 let profitList;
+let profitRange = [150, 900];
 
 
 
@@ -22,11 +23,14 @@ fetchPlayers = () =>{
         localStorage.setItem("players", JSON.stringify(data));
         loadingBar.innerHTML="Players Loaded!"
         //Need to output on to the page in a container
-        
+        profitRange[0] === 150 && profitRange[1] === 900 ? gatherProfitRange(150,900) : null;
     })
 }
 
 gatherProfitRange = (min,max) =>{
+    profitRange[0] = min;
+    profitRange[1] = max;
+    
     let gatheredPlayers = []
     for(let i=0;i < playerList.length; i++){
         if(playerList[i].profitMargin > min && playerList[i].profitMargin < max ){
@@ -86,6 +90,7 @@ document.querySelector("#outbidChecker").addEventListener("submit", function(e){
     outbidChecker(orderType, amount, playerName);
 })
 
+//run fetch every minute to grab latest
 setInterval(function() {
     fetchPlayers();
 }, 60 * 1000);
