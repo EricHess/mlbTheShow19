@@ -5,6 +5,9 @@
  * Profit Range Table: Run method at end of Total List Table using default range of 250 - 10000
  * Bid Table: Refresh every 30 seconds, utilizing method to grab fresh data, set up push alerts?
  * 
+ * 
+ * 
+ * NEED TO BUILD A SCRAPER FOR THE BID TABLE
  */
 
 let playerList = localStorage.getItem("players") != null ? JSON.parse(localStorage.getItem("players")) : null;
