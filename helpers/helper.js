@@ -20,7 +20,6 @@ fetchPlayers = () =>{
     .then(response => response.json())
     .then(data => {
         playerList = data;
-        console.table(localStorage.getItem("players"))
         localStorage.removeItem("players");
         localStorage.setItem("players", JSON.stringify(data));
         loadingBar.innerHTML="Players Loaded!"

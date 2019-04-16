@@ -8843,8 +8843,7 @@ returnOutbidAlert = (res, originalPage) =>{
                 resp.listings[i].originalPage=resp.page;
                 resp.listings[i].uniqueId=_.uniqueId("uid");
             }
-
-
+            
             //push the current set to the global array
             wholeCollection.push(resp.listings);
 
