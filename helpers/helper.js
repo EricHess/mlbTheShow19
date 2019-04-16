@@ -56,7 +56,7 @@ outbidChecker = (type, amount, name) =>{
 
 updateBidTable = (type, amount, name) =>{
     let bidTable = document.querySelector("#bidChecker .bidList");
-    
+    let f;
 }
 
 
