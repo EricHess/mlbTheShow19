@@ -8,6 +8,12 @@
  * 
  * 
  * NEED TO BUILD A SCRAPER FOR THE BID TABLE
+ * 
+ * ALERTS WHEN A PRICE GOES ABOVE OR BELOW SOMETHING
+ * 
+ * START TO LOG SPECIFIC IDS TO GO RIGHT TO THAT MARKETPLACE PAGE
+ * 
+ * AUTO RUN THE OUTBID CHECKER
  */
 
 let playerList = localStorage.getItem("players") != null ? JSON.parse(localStorage.getItem("players")) : null;
