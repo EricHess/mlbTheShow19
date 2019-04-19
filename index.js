@@ -8906,8 +8906,7 @@ function consumeData(collection, pageId){
             "profitMargin": ((collection[i].best_sell_price - collection[i].best_sell_price * .10) - collection[i].best_buy_price),
             "sell_price": collection[i].best_sell_price,
             "buy_price": collection[i].best_buy_price,
-            "original_page": collection[i].originalPage,
-            "uid": collection[i].uniqueId
+            "original_page": collection[i].originalPage
         })
     }
       

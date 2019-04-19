@@ -14,6 +14,8 @@
  * START TO LOG SPECIFIC IDS TO GO RIGHT TO THAT MARKETPLACE PAGE
  * 
  * AUTO RUN THE OUTBID CHECKER
+ * 
+ * HANDLE MULTIPLE CARDS OF THE SAME PLAYER NAME
  */
 
 let playerList = localStorage.getItem("players") != null ? JSON.parse(localStorage.getItem("players")) : null;
@@ -63,11 +65,11 @@ outbidChecker = (type, amount, name) =>{
         let updatedInfo = data.find(obj => obj.name == name);
 
         //updateBidTable with name, price, amount
-        updateBidTable(updatedInfo, type);
+        updateBidTable(updatedInfo, type, amount);
 
         switch(type){
             case "buyOrder":
-            updatedInfo.best_buy_price == parseInt(amount) ? console.log('all good still') : console.log('outbid, new bid is: '+updatedInfo.best_sell_price) 
+            updatedInfo.best_buy_price == parseInt(amount) ? console.log('all good still') : console.log('outbid, new bid is: '+updatedInfo.best_buy_price) 
             break;
     
             case "sellOrder":
@@ -75,12 +77,17 @@ outbidChecker = (type, amount, name) =>{
         }
      });
 
-    
 }
 
-updateBidTable = (obj, type) =>{
-    let bidTable = document.querySelector("#bidChecker .bidList");
-    console.log(obj)
+updateBidTable = (obj, type, amount) =>{
+    let bidTable = document.querySelector("#bidChecker .bidList tbody");
+    let name = obj.name,
+    bidAmount = amount,
+    currentPrice,
+    bidType= type
+
+    bidTable.innerHTML += "<tr>"+"<td class='itemName'>"+name+"</td>"+"<td class='itemAmount'>"+bidAmount+"</td>"+"<td class='currentBid'>"+currentPrice+"</td>"+"<td class='bidType'>"+bidType+"</td>"+"<td class='deleteItem'>X</td>"+"</tr>"
+
     
 }
 
