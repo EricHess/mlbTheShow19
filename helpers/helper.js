@@ -59,40 +59,51 @@ outbidChecker = (type, amount, name) =>{
     //NEED TO POPULATE BID TABLE
     //NEED TO CONSISTENTLY CHECK BID TABLE
     let playerElement = playerList.find(obj => obj.name == name);
-    fetch('/outbidCheck/'+playerElement.original_page+"?")
+    fetch('/outbidCheck/'+playerElement.original_page)
     .then(response => response.json())
     .then(data => {
         let updatedInfo = data.find(obj => obj.name == name);
 
-        //updateBidTable with name, price, amount
-        updateBidTable(updatedInfo, type, amount);
+        //addToBidTable with name, price, amount
+        addToBidTable(updatedInfo, type, amount);
 
-        switch(type){
-            case "buyOrder":
-            updatedInfo.best_buy_price == parseInt(amount) ? console.log('all good still') : console.log('outbid, new bid is: '+updatedInfo.best_buy_price) 
-            break;
-    
-            case "sellOrder":
-            updatedInfo.best_sell_price == parseInt(amount) ? console.log('all good still') : console.log('outbid, new bid is: '+updatedInfo.best_sell_price)   
-        }
+        return updatedInfo;
      });
 
 }
 
-updateBidTable = (obj, type, amount) =>{
+addToBidTable = (obj, type, amount) =>{
     let bidTable = document.querySelector("#bidChecker .bidList tbody");
     let name = obj.name,
     bidAmount = amount,
     currentPrice,
     bidType= type
 
-    bidTable.innerHTML += "<tr>"+"<td class='itemName'>"+name+"</td>"+"<td class='itemAmount'>"+bidAmount+"</td>"+"<td class='currentBid'>"+currentPrice+"</td>"+"<td class='bidType'>"+bidType+"</td>"+"<td class='deleteItem'>X</td>"+"</tr>"
+    bidTable.innerHTML += "<tr>"+"<td class='itemName'>"+name+"</td>"+"<td class='itemAmount'>"+bidAmount+"</td>"+"<td class='currentBid'>"+currentPrice+"</td>"+"<td class='bidType'>"+bidType+"</td>"+"<td class='deleteItem'>X</td>"+"</tr>"    
+}
 
-    
+updateBidTable = (mutationsList, observer) => {
+    let bidTableDOM = document.querySelector("#bidChecker .bidList tbody");
+    let adds = mutationsList[0].addedNodes;
+    let bidData;
+
+    setInterval(function() {
+        
+        for(let i=3; i<adds.length; i++){
+            //get the updated bids for the player names (fucntion already exsits in bidChecker)
+            //update the currentBid and change a class to green or red to show when I've been outbid
+            bidData = outbidChecker(adds[i].cells[3].innerText,adds[i].cells[1].innerText,adds[i].cells[0].innerText);
+            console.log(bidData);
+        }
+
+    }, 10 * 1000);
 }
 
 
 window.onload = () =>{
+//mutation observation for the bidtable
+let bidConfig = {childList: true, subtree: true}
+let bidTableDOM = document.querySelector("#bidChecker .bidList tbody");
 
 //event listeners
 document.querySelector("#profitMarginForm").addEventListener("submit", function(e){
@@ -107,6 +118,10 @@ document.querySelector("#outbidChecker").addEventListener("submit", function(e){
     let playerName = e.target[3].value;
     outbidChecker(orderType, amount, playerName);
 })
+
+//start up the bidWatcher
+let bidWatcher = new MutationObserver(updateBidTable);
+bidWatcher.observe(bidTableDOM, bidConfig)
 
 //run fetch every minute to grab latest
 setInterval(function() {
