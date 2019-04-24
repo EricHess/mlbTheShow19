@@ -99,7 +99,8 @@ checkForOutbidExistence = (domElement, type, selectedMyBid, data) =>{
             domElement.classList.add("currentHighBidders")
         }   else if (currentBid > buyPrice){
             domElement.classList.remove("currentHighBidder")
-            domElement.classList.add("orderCompleted")
+            domElement.classList.add("orderCompleted");
+            domElement.remove();
         } else if (currentBid < buyPrice){
             domElement.classList.remove("currentHighBidder")
             domElement.classList.add("outbid")
@@ -123,9 +124,10 @@ getDataForBidTable = (mutationsList, observer) => {
     let adds = mutationsList[0].addedNodes;
     let bidData;
 
-    setInterval(function() {
-        
+    let theInterval = setInterval(function() {
+        let bidTableDOM = document.querySelectorAll("#bidChecker .bidList tbody tr");
         for(let i=3; i<adds.length; i++){
+
             //get the updated bids for the player names (fucntion already exsits in bidChecker)
             //update the currentBid and change a class to green or red to show when I've been outbid
             //need to wait until outbidchecker returns a result to finish.
@@ -133,8 +135,14 @@ getDataForBidTable = (mutationsList, observer) => {
             .then(data => bidData = data) //start to use the data..
             .then(data => updateBidTable(bidData)) 
         }
-        
+        console.log(bidTableDOM.length)
+        bidTableDOM.length <= 1 ? clearInterval(theInterval) : false;
+       
     }, 10 * 1000);
+
+   
+
+    
 }
 
 
