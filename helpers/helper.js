@@ -54,27 +54,37 @@ gatherProfitRange = (min,max) =>{
     return gatheredPlayers;
 }
 
-outbidChecker = (type, amount, name) =>{
-    //NEED TO GET THE UID INSTEAD OF THE NAME
-    //NEED TO POPULATE BID TABLE
-    //NEED TO CONSISTENTLY CHECK BID TABLE
+// outbidChecker = async (type, amount, name) =>{
+//     //NEED TO GET THE UID INSTEAD OF THE NAME
+//     //NEED TO POPULATE BID TABLE
+//     //NEED TO CONSISTENTLY CHECK BID TABLE
+//     let playerElement = playerList.find(obj => obj.name == name);
+//     let updatedInfo;
+
+//     fetch('/outbidCheck/'+playerElement.original_page)
+//     .then(response => response.json())
+//     .then(data => {
+//         updatedInfo = data.find(obj => obj.name == name);
+//      })
+//      .then(() =>{
+//         return updatedInfo;
+//      })
+
+// }
+
+
+outbidChecker = async (type, amount, name) =>{
     let playerElement = playerList.find(obj => obj.name == name);
-    fetch('/outbidCheck/'+playerElement.original_page)
-    .then(response => response.json())
-    .then(data => {
-        let updatedInfo = data.find(obj => obj.name == name);
-
-        //addToBidTable with name, price, amount
-        addToBidTable(updatedInfo, type, amount);
-
-        return updatedInfo;
-     });
-
+    let updatedInfo;
+    let response = await fetch('/outbidCheck/'+playerElement.original_page);
+    let data = await response.json();
+    let finalOutput = await data.find(obj => obj.name == name)
+    return finalOutput;
 }
 
-addToBidTable = (obj, type, amount) =>{
-    let bidTable = document.querySelector("#bidChecker .bidList tbody");
-    let name = obj.name,
+
+addToBidTable = (type, amount, name) =>{
+    let bidTable = document.querySelector("#bidChecker .bidList tbody"),
     bidAmount = amount,
     currentPrice,
     bidType= type
@@ -92,10 +102,12 @@ updateBidTable = (mutationsList, observer) => {
         for(let i=3; i<adds.length; i++){
             //get the updated bids for the player names (fucntion already exsits in bidChecker)
             //update the currentBid and change a class to green or red to show when I've been outbid
-            bidData = outbidChecker(adds[i].cells[3].innerText,adds[i].cells[1].innerText,adds[i].cells[0].innerText);
-            console.log(bidData);
+            //need to wait until outbidchecker returns a result to finish.
+            outbidChecker(adds[i].cells[3].innerText,adds[i].cells[1].innerText,adds[i].cells[0].innerText)
+            .then(data => bidData = data) //start to use the data..
+            .then(data => console.log(bidData)) 
         }
-
+        
     }, 10 * 1000);
 }
 
@@ -116,7 +128,7 @@ document.querySelector("#outbidChecker").addEventListener("submit", function(e){
     let orderType = e.target[0].checked === true ? "buyOrder" : "sellOrder"
     let amount = e.target[2].value;
     let playerName = e.target[3].value;
-    outbidChecker(orderType, amount, playerName);
+    addToBidTable(orderType, amount, playerName);
 })
 
 //start up the bidWatcher
