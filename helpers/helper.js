@@ -71,6 +71,10 @@ addToBidTable = (type, amount, name) =>{
     bidType= type
 
     bidTable.innerHTML += "<tr data-item-name='"+name+"'>"+"<td class='itemName'>"+name+"</td>"+"<td class='itemAmount'>"+bidAmount+"</td>"+"<td class='currentBid'>"+currentPrice+"</td>"+"<td class='bidType'>"+bidType+"</td>"+"<td class='deleteItem'>X</td>"+"</tr>"    
+    
+    document.querySelector(".deleteItem").addEventListener("click", function(e){
+        e.currentTarget.parentElement.remove();
+    })
 }
 
 
@@ -90,7 +94,6 @@ checkForOutbidExistence = (domElement, type, selectedMyBid, data) =>{
     let buyPrice = data.best_buy_price;
     let sellPrice = data.best_sell_price;
     let currentBid = selectedMyBid.textContent;
-    console.log(data)
 
     switch(type) {
         case "buyOrder": 
@@ -109,11 +112,14 @@ checkForOutbidExistence = (domElement, type, selectedMyBid, data) =>{
         
         case "sellOrder":
         if(currentBid == sellPrice){
-            console.log("all good")
+            domElement.classList.add("currentHighBidders")
         }   else if (currentBid < sellPrice){
-            console.log("order completed");
+            domElement.classList.remove("currentHighBidder")
+            domElement.classList.add("orderCompleted");
+            domElement.remove();
         } else if (currentBid > sellPrice) {
-            console.log('outbid');
+            domElement.classList.remove("currentHighBidder")
+            domElement.classList.add("outbid")
         }
         break;
     }
@@ -164,6 +170,8 @@ document.querySelector("#outbidChecker").addEventListener("submit", function(e){
     let playerName = e.target[3].value;
     addToBidTable(orderType, amount, playerName);
 })
+
+
 
 //start up the bidWatcher
 let bidWatcher = new MutationObserver(getDataForBidTable);
