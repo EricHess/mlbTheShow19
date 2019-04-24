@@ -54,25 +54,6 @@ gatherProfitRange = (min,max) =>{
     return gatheredPlayers;
 }
 
-// outbidChecker = async (type, amount, name) =>{
-//     //NEED TO GET THE UID INSTEAD OF THE NAME
-//     //NEED TO POPULATE BID TABLE
-//     //NEED TO CONSISTENTLY CHECK BID TABLE
-//     let playerElement = playerList.find(obj => obj.name == name);
-//     let updatedInfo;
-
-//     fetch('/outbidCheck/'+playerElement.original_page)
-//     .then(response => response.json())
-//     .then(data => {
-//         updatedInfo = data.find(obj => obj.name == name);
-//      })
-//      .then(() =>{
-//         return updatedInfo;
-//      })
-
-// }
-
-
 outbidChecker = async (type, amount, name) =>{
     let playerElement = playerList.find(obj => obj.name == name);
     let updatedInfo;
@@ -89,11 +70,23 @@ addToBidTable = (type, amount, name) =>{
     currentPrice,
     bidType= type
 
-    bidTable.innerHTML += "<tr>"+"<td class='itemName'>"+name+"</td>"+"<td class='itemAmount'>"+bidAmount+"</td>"+"<td class='currentBid'>"+currentPrice+"</td>"+"<td class='bidType'>"+bidType+"</td>"+"<td class='deleteItem'>X</td>"+"</tr>"    
+    bidTable.innerHTML += "<tr data-item-name='"+name+"'>"+"<td class='itemName'>"+name+"</td>"+"<td class='itemAmount'>"+bidAmount+"</td>"+"<td class='currentBid'>"+currentPrice+"</td>"+"<td class='bidType'>"+bidType+"</td>"+"<td class='deleteItem'>X</td>"+"</tr>"    
 }
 
-updateBidTable = (mutationsList, observer) => {
+
+updateBidTable = (biddingData) => {
     let bidTableDOM = document.querySelector("#bidChecker .bidList tbody");
+    //find the matching row
+    //apply updates to that row for current bid
+    let selectedRow = document.querySelector("tr[data-item-name='"+biddingData.name+"']")
+    let selectedCurrentBid = selectedRow.querySelector(".currentBid");
+    let selectedRowType = selectedRow.querySelector(".bidType").textContent;
+    selectedCurrentBid.innerHTML = selectedRowType == "buyOrder" ? biddingData.best_buy_price : biddingData.best_sell_price;
+    
+}
+
+getDataForBidTable = (mutationsList, observer) => {
+
     let adds = mutationsList[0].addedNodes;
     let bidData;
 
@@ -105,7 +98,7 @@ updateBidTable = (mutationsList, observer) => {
             //need to wait until outbidchecker returns a result to finish.
             outbidChecker(adds[i].cells[3].innerText,adds[i].cells[1].innerText,adds[i].cells[0].innerText)
             .then(data => bidData = data) //start to use the data..
-            .then(data => console.log(bidData)) 
+            .then(data => updateBidTable(bidData)) 
         }
         
     }, 10 * 1000);
@@ -132,7 +125,7 @@ document.querySelector("#outbidChecker").addEventListener("submit", function(e){
 })
 
 //start up the bidWatcher
-let bidWatcher = new MutationObserver(updateBidTable);
+let bidWatcher = new MutationObserver(getDataForBidTable);
 bidWatcher.observe(bidTableDOM, bidConfig)
 
 //run fetch every minute to grab latest
