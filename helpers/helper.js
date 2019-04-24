@@ -80,9 +80,42 @@ updateBidTable = (biddingData) => {
     //apply updates to that row for current bid
     let selectedRow = document.querySelector("tr[data-item-name='"+biddingData.name+"']")
     let selectedCurrentBid = selectedRow.querySelector(".currentBid");
+    let selectedMyBid = selectedRow.querySelector(".itemAmount");
     let selectedRowType = selectedRow.querySelector(".bidType").textContent;
     selectedCurrentBid.innerHTML = selectedRowType == "buyOrder" ? biddingData.best_buy_price : biddingData.best_sell_price;
-    
+    checkForOutbidExistence(selectedRow, selectedRowType, selectedMyBid, biddingData);
+}
+
+checkForOutbidExistence = (domElement, type, selectedMyBid, data) =>{
+    let buyPrice = data.best_buy_price;
+    let sellPrice = data.best_sell_price;
+    let currentBid = selectedMyBid.textContent;
+    console.log(data)
+
+    switch(type) {
+        case "buyOrder": 
+        console.log(currentBid+" "+buyPrice)
+        if(currentBid == buyPrice){
+            domElement.classList.add("currentHighBidders")
+        }   else if (currentBid > buyPrice){
+            domElement.classList.remove("currentHighBidder")
+            domElement.classList.add("orderCompleted")
+        } else if (currentBid < buyPrice){
+            domElement.classList.remove("currentHighBidder")
+            domElement.classList.add("outbid")
+        }
+        break;
+        
+        case "sellOrder":
+        if(currentBid == sellPrice){
+            console.log("all good")
+        }   else if (currentBid < sellPrice){
+            console.log("order completed");
+        } else if (currentBid > sellPrice) {
+            console.log('outbid');
+        }
+        break;
+    }
 }
 
 getDataForBidTable = (mutationsList, observer) => {
