@@ -103,7 +103,7 @@ checkForOutbidExistence = (domElement, type, selectedMyBid, data) =>{
         }   else if (currentBid > buyPrice){
             domElement.classList.remove("currentHighBidders")
             domElement.classList.add("orderCompleted");
-            domElement.remove();
+            // domElement.remove();
         } else if (currentBid < buyPrice){
             domElement.classList.remove("currentHighBidders")
             domElement.classList.add("outbid")
@@ -116,7 +116,7 @@ checkForOutbidExistence = (domElement, type, selectedMyBid, data) =>{
         }   else if (currentBid < sellPrice){
             domElement.classList.remove("currentHighBidders")
             domElement.classList.add("orderCompleted");
-            domElement.remove();
+            // domElement.remove();
         } else if (currentBid > sellPrice) {
             domElement.classList.remove("currentHighBidders")
             domElement.classList.add("outbid")
