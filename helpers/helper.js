@@ -49,7 +49,9 @@ gatherProfitRange = (min,max) =>{
             gatheredPlayers.push(playerList[i])
         }
     }
+
     console.table(gatheredPlayers);
+    updateProfitTable(gatheredPlayers);
     //need to output on to hte page in a container
     return gatheredPlayers;
 }
@@ -75,6 +77,25 @@ addToBidTable = (type, amount, name) =>{
     document.querySelector(".deleteItem").addEventListener("click", function(e){
         e.currentTarget.parentElement.remove();
     })
+}
+
+updateProfitTable = (gathered) =>{
+    let profitTable = document.querySelector("#topProfitMargin .marginList .listHere"),
+    name = gathered.name,
+    salePrice= gathered.sell_price,
+    buyPrice= gathered.buy_price,
+    profitMargin= gathered.profitMargin
+
+    profitTable.innerHTML="";
+
+    for(let i=0;i<gathered.length;i++){
+        name = gathered[i].name,
+        salePrice= gathered[i].sell_price,
+        buyPrice= gathered[i].buy_price,
+        profitMargin= gathered[i].profitMargin
+
+        profitTable.innerHTML += "<tr data-item-name='"+name+"'>"+"<td class='itemName'>"+name+"</td>"+"<td class='profitMargin'>"+profitMargin+"</td>"+"<td class='sell_price'>"+salePrice+"</td>"+"<td class='buyPrice'>"+buyPrice+"</td>"+"</tr>"    
+    }
 }
 
 
