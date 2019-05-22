@@ -8861,36 +8861,7 @@ returnOutbidAlert = (res, originalPage) =>{
                 res.send(consumeData(wholeCollection.flat()));
             }
         })      
-    } else {
-        request("https://mlb19.theshownation.com/apis/listings.json?type="+type+"&page="+pageIdToCall, function (error, response, body) {
-
-        //get the response, parse it down to just the body
-            let resp = JSON.parse(response.body)
-            let newArr = [];
-
-            //push the current set to the global array
-            //merge the arrays and de-dupe here
-            newArr.push(resp.listings);
-
-            //iterate over newArr and grab the uniqueIDs
-            //find that uniqueID in wholeCollection, and replace that node. (splice(i,1,node))
-            for(let i=0;i<newArr.length;i++){
-                for(let j=0;j<wholeCollection.length;j++){
-                    if(newArr[i].uniqueId === wholeCollection[j].uniqueId){
-                        wholeCollection.splice(j,1,newArr[i]);
-                    }
-                }
-            }
-
-            // console.log(wholeCollection)
-
-            // wholeCollection.push(resp.listings);
-
-            //when it is all done, send it to the consume data method
-            // res.send(consumeData(wholeCollection.flat(), null));
-            
-        })
-    }
+    } 
 
     // use stub data.....
     // res.send(consumeData(stub.flat()));
