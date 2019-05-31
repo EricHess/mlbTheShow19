@@ -62,7 +62,7 @@ outbidChecker = async (type, amount, name) =>{
     let response = await fetch('/outbidCheck/'+playerElement.original_page);
     let data = await response.json();
     //final output will only find duplicate players with 500 bid amount variance or less to ignore duplicates
-    let finalOutput = await data.find(obj => obj.name == name && (amount - obj.best_buy_price < 500))
+    let finalOutput = await data.find(obj => obj.name == name && (amount - obj.best_buy_price < 500 || amount - obj.best_sell_price < 500))
     return finalOutput;
 }
 
@@ -75,10 +75,20 @@ addToBidTable = (type, amount, name) =>{
 
     bidTable.innerHTML += "<tr data-item-name='"+name+"'>"+"<td class='itemName'>"+name+"</td>"+"<td class='itemAmount'>"+bidAmount+"</td>"+"<td class='currentBid'>"+currentPrice+"</td>"+"<td class='bidType'>"+bidType+"</td>"+"<td class='deleteItem'>X</td>"+"</tr>"    
     
-    document.querySelector(".deleteItem").addEventListener("click", function(e){
-        e.currentTarget.parentElement.remove();
-        localStorage.removeItem("buyAlerted_"+name) ;
-    })
+    // document.querySelector(".deleteItem").addEventListener("click", function(e){
+    //     console.log('clicked delete')
+    //     e.currentTarget.parentElement.remove();
+    //     localStorage.removeItem("buyAlerted_"+name) ;
+    // })
+
+    let deleteButtons = document.querySelectorAll(".deleteItem");
+    for(let i = 0; i<deleteButtons.length;i++){
+        deleteButtons[i].addEventListener("click", function(e){
+                e.currentTarget.parentElement.remove();
+                localStorage.removeItem("buyAlerted_"+name) ;
+                localStorage.removeItem("sellAlerted_"+name) ;
+            })
+    }
 }
 
 updateProfitTable = (gathered) =>{
@@ -120,7 +130,6 @@ checkForOutbidExistence = (domElement, type, selectedMyBid, data) =>{
 
     switch(type) {
         case "buyOrder": 
-        console.log(currentBid+" "+buyPrice)
         if(currentBid == buyPrice){
             domElement.classList.remove("orderCompleted")
             domElement.classList.add("currentHighBidders")
@@ -141,18 +150,25 @@ checkForOutbidExistence = (domElement, type, selectedMyBid, data) =>{
         
         case "sellOrder":
         if(currentBid == sellPrice){
+            domElement.classList.remove("orderCompleted")
             domElement.classList.add("currentHighBidders")
         }   else if (currentBid < sellPrice){
             domElement.classList.remove("currentHighBidders")
             domElement.classList.add("orderCompleted");
             // domElement.remove();
         } else if (currentBid > sellPrice) {
+            domElement.classList.remove("orderCompleted")
             domElement.classList.remove("currentHighBidders")
-            domElement.classList.add("outbid")
+            domElement.classList.add("outbid");
+            let alerted = localStorage.getItem('sellAlerted_'+data.name) || '';
+                if (alerted != 'yes') {
+                    alert("Outbid")
+                    localStorage.setItem('sellAlerted_'+data.name,'yes')
+                }
+            }
         }
-        break;
     }
-}
+
 
 getDataForBidTable = (mutationsList, observer) => {
 
@@ -170,7 +186,6 @@ getDataForBidTable = (mutationsList, observer) => {
             .then(data => bidData = data) //start to use the data..
             .then(data => updateBidTable(bidData)) 
         }
-        console.log(bidTableDOM.length)
         bidTableDOM.length <= 1 ? clearInterval(theInterval) : false;
        
     }, 10 * 1000);
