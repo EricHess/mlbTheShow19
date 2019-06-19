@@ -50,7 +50,22 @@ gatherProfitRange = (min,max) =>{
         }
     }
 
-    console.table(gatheredPlayers);
+    updateProfitTable(gatheredPlayers);
+    //need to output on to hte page in a container
+    return gatheredPlayers;
+}
+
+gatherRatioRange = (min,max) =>{
+    profitRange[0] = min;
+    profitRange[1] = max;
+    
+    let gatheredPlayers = [];
+    for(let i=0;i < playerList.length; i++){
+        if(playerList[i].profitRatio > min && playerList[i].profitRatio < max ){
+            gatheredPlayers.push(playerList[i])
+        }
+    }
+
     updateProfitTable(gatheredPlayers);
     //need to output on to hte page in a container
     return gatheredPlayers;
@@ -107,7 +122,8 @@ updateProfitTable = (gathered) =>{
         profitMargin= gathered[i].profitMargin,
         profitRatio= ((gathered[i].profitRatio)*100).toFixed(2)
 
-        console.log(gathered[i])
+        //need to add in the ability to change what is sorted on now
+
         profitTable.innerHTML += "<tr data-item-name='"+name+"'>"+"<td class='itemName'>"+name+"</td>"+"<td class='profitMargin'>"+profitMargin+"</td>"+"<td class='sell_price'>"+salePrice+"</td>"+"<td class='buyPrice'>"+buyPrice+"</td>"+"<td class='profitRatio'>"+profitRatio+"</td>"+"</tr>"    
     }
 }
@@ -207,6 +223,11 @@ let bidTableDOM = document.querySelector("#bidChecker .bidList tbody");
 document.querySelector("#profitMarginForm").addEventListener("submit", function(e){
     e.preventDefault();
     profitList = gatherProfitRange(e.target[0].value, e.target[1].value)
+})
+
+document.querySelector("#profitRatioForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    profitList = gatherRatioRange(e.target[0].value, e.target[1].value)
 })
 
 document.querySelector("#outbidChecker").addEventListener("submit", function(e){
