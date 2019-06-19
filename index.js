@@ -8872,12 +8872,15 @@ function consumeData(collection, pageId){
     let draftArr = [];
     
     for(let i = 0; i<collection.length;i++){
+        let pm = ((collection[i].best_sell_price - collection[i].best_sell_price * .10) - collection[i].best_buy_price);
+        let pr = pm / collection[i].best_buy_price;
         draftArr.push ({
             "name": collection[i].name,
-            "profitMargin": ((collection[i].best_sell_price - collection[i].best_sell_price * .10) - collection[i].best_buy_price),
+            "profitMargin": pm,
             "sell_price": collection[i].best_sell_price,
             "buy_price": collection[i].best_buy_price,
-            "original_page": collection[i].originalPage
+            "original_page": collection[i].originalPage,
+            "profitRatio": pr
         })
     }
       

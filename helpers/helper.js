@@ -104,9 +104,11 @@ updateProfitTable = (gathered) =>{
         name = gathered[i].name,
         salePrice= gathered[i].sell_price,
         buyPrice= gathered[i].buy_price,
-        profitMargin= gathered[i].profitMargin
+        profitMargin= gathered[i].profitMargin,
+        profitRatio= ((gathered[i].profitRatio)*100).toFixed(2)
 
-        profitTable.innerHTML += "<tr data-item-name='"+name+"'>"+"<td class='itemName'>"+name+"</td>"+"<td class='profitMargin'>"+profitMargin+"</td>"+"<td class='sell_price'>"+salePrice+"</td>"+"<td class='buyPrice'>"+buyPrice+"</td>"+"</tr>"    
+        console.log(gathered[i])
+        profitTable.innerHTML += "<tr data-item-name='"+name+"'>"+"<td class='itemName'>"+name+"</td>"+"<td class='profitMargin'>"+profitMargin+"</td>"+"<td class='sell_price'>"+salePrice+"</td>"+"<td class='buyPrice'>"+buyPrice+"</td>"+"<td class='profitRatio'>"+profitRatio+"</td>"+"</tr>"    
     }
 }
 
