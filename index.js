@@ -8824,7 +8824,7 @@ app.get("/", (req,res) =>{
 
 
 returnOutbidAlert = (res, originalPage) =>{
-    request("https://mlb19.theshownation.com/apis/listings.json?type=MLB_Card&page="+originalPage, function (error, response, body) {
+    request("https://theshownation.com/mlb20/apis/listings.json?type=MLB_Card&page="+originalPage, function (error, response, body) {
         let resp = JSON.parse(response.body);
         res.send(resp.listings);
     })
@@ -8835,7 +8835,7 @@ returnOutbidAlert = (res, originalPage) =>{
     
 
     if(pageIdToCall === false){
-        request("https://mlb19.theshownation.com/apis/listings.json?type="+type+"&page="+iterator, function (error, response, body) {
+        request("https://theshownation.com/mlb20/apis/listings.json?type="+type+"&page="+iterator, function (error, response, body) {
             //get the response, parse it down to just the body
             let resp = JSON.parse(response.body)
             
